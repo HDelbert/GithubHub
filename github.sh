@@ -6,7 +6,7 @@ function usage() {
     echo "$CMD init"
     echo "$CMD push|pull repo_name"
     echo ""
-    echo "$CMD init: Create git.private.pem and git.public.pem under ~/keys. Then create leaf directory under this direcotry and git-clone root from Github."
+    echo "$CMD init: Create git.private.pem and git.public.pem under $KEYDIR. Then create leaf directory under this direcotry and git-clone root from Github."
     echo "NOTE: A Github repo called root should be created on github.com beforehand."
     echo ""
     echo "$CMD push repo_name: Make directory repo_name under leaf/ to an compressed archived file into root/ with the same name."
@@ -15,13 +15,16 @@ function usage() {
     echo "$CMD pull repo_name: Pull the update files from github to root. Decompress file repo_name under root/ to leaf/."
 }
 
+
 function info() {
     echo "[INFO]$@"
 }
 
+
 function error() {
     echo "[ERROR]$@"
 }
+
 
 function init() {
     cd /
@@ -40,6 +43,7 @@ function init() {
     openssl req -x509 -nodes -days 100000 -newkey rsa:2048 -keyout "$GITPRIVATE" -out "$GITPUBLIC" -subj '/'
     info "Pem files created. Please clone 'root' from your Github under $BASE."
 }
+
 
 function push() {
     info "Push $LEAFREPO to Github"
@@ -65,6 +69,7 @@ function push() {
     info "Finish push $REPO"
 }    
 
+
 function pull() {
     info "Pull from Github"
 
@@ -86,17 +91,26 @@ function pull() {
     info "Finish pull $REPO"
 }
 
+
 BASE="$(cd `dirname $0`; pwd)"
 KEYDIR="~/key"
 info "BASE=$BASE"
-
 CMD="$(basename $0)"
 ACTION="$1"
-
 ROOT_DIR="$BASE/root"
 LEAF_DIR="$BASE/leaf"
 REPO="$2"
 TMP="$REPO.ttl1"
+
+
+LEAFREPO="$LEAF_DIR/$REPO"
+ROOTREPO="$ROOT_DIR/$REPO"
+LEAFTMP="$LEAF_DIR/$TMP"
+
+
+GITPRIVATE="git.private.pem"
+GITPUBLIC="git.public.pem"
+
 
 if ( [ "$ACTION" == "push" ] || [ "$ACTION" == "pull" ] ) && [ -z "$REPO" ];
 then 
@@ -104,12 +118,6 @@ then
     exit 1
 fi
 
-LEAFREPO="$LEAF_DIR/$REPO"
-ROOTREPO="$ROOT_DIR/$REPO"
-LEAFTMP="$LEAF_DIR/$TMP"
-
-GITPRIVATE="git.private.pem"
-GITPUBLIC="git.public.pem"
 
 case $ACTION in
     "init") init ;;
