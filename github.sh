@@ -27,13 +27,18 @@ function error() {
 
 
 function init() {
-    cd /
+    cd "$BASE"
+
     if [ ! -d "$LEAF_DIR" ]; 
     then
         mkdir "$LEAF_DIR"
     fi
 
-    cd "$BASE"
+    if [ ! -d "$KEYDIR" ];
+    then
+        mkdir "$KEYDIR"
+    fi
+
     if [ -e "$GITPRIVATE" ] || [ -e "$GITPUBLIC" ];
     then 
         error "Pem files exits with the same name. Exit."
@@ -54,13 +59,14 @@ function push() {
         exit 1
     fi
 
-    cd /
+    cd "$BASE"
     info "Remove $REPO under $ROOT_DIR/"
     rm -f "$ROOTREPO"
     info "Encrypt $REPO from $LEAF_DIR to $ROOT_DIR"
     tar czf "$LEAFTMP" "$LEAFREPO"
-    openssl smime -encrypt -aes256 -binary -outform DEM -in "$LEAFTMP" -out "$ROOTREPO" "$BASE/$GITPUBLIC"
+    openssl smime -encrypt -aes256 -binary -outform DEM -in "$LEAFTMP" -out "$ROOTREPO" "$GITPUBLIC"
     rm -f "$LEAFTMP"
+
     cd "$ROOT_DIR"
     info "Add to Github"
     git add "$REPO"
@@ -81,10 +87,10 @@ function pull() {
         exit 1
     fi
 
-    cd /
+    cd "$BASE"
     info "Decrypting $ROOTREPO to $REPO"
-    info "$TMP"
-    openssl smime -decrypt -binary -inform DEM -inkey "$BASE/$GITPRIVATE" -in "$ROOTREPO" -out "$LEAFTMP"
+    info "$LEAFTMP"
+    openssl smime -decrypt -binary -inform DEM -inkey "$GITPRIVATE" -in "$ROOTREPO" -out "$LEAFTMP"
     rm -rf "$LEAFREPO"
     tar xzf "$LEAFTMP"
     rm -r "$LEAFTMP"
@@ -92,13 +98,13 @@ function pull() {
 }
 
 
-BASE="$(cd `dirname $0`; pwd)"
-KEYDIR="~/key"
+BASE="$(pwd)"
+KEYDIR="$HOME/.keys"
 info "BASE=$BASE"
 CMD="$(basename $0)"
 ACTION="$1"
-ROOT_DIR="$BASE/root"
-LEAF_DIR="$BASE/leaf"
+ROOT_DIR="root"
+LEAF_DIR="leaf"
 REPO="$2"
 TMP="$REPO.ttl1"
 
@@ -108,8 +114,8 @@ ROOTREPO="$ROOT_DIR/$REPO"
 LEAFTMP="$LEAF_DIR/$TMP"
 
 
-GITPRIVATE="git.private.pem"
-GITPUBLIC="git.public.pem"
+GITPRIVATE="$KEYDIR/git.private.pem"
+GITPUBLIC="$KEYDIR/git.public.pem"
 
 
 if ( [ "$ACTION" == "push" ] || [ "$ACTION" == "pull" ] ) && [ -z "$REPO" ];
