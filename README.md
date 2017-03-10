@@ -40,7 +40,7 @@ How this project work:
 
     Suppose I want to create a project called 'secret.git' which I would like to put onto Github while nobody else can read it.
 
-    Goto leaf/ and create a directory 'secret.git'. Then goto secret/ and init it as a bare repository: `git init --bare`. So this git repo will work like a remote one.(A bare repo is a git repo withou index and work space which is often used as center repositroy.)
+    Goto leaf/ and create a directory 'secret.git'. Then goto secret.git/ and init it as a bare repository: `git init --bare`. So this git repo will work like a remote one.(A bare repo is a git repo without index and work space which is often used as center repositroy.)
 
     After that, goto some other directory and git clone the newly created git bare repo: `git clone dirs/some_dir/leaf/secret.git`. Great! You are can work as usual now! Add some content and do some change. Then `git add` && `git commit` && `git push`.
 
@@ -50,4 +50,4 @@ How this project work:
 
 IMPORTANT:
 ==========
-After the pem files generated with "github.sh init", please take care these *.pem files carefully. Once they are lost, you have no way to decrypt the file on you Github which means you lost them forever!!
+After the pem files generated with `github.sh init`, please take care these \*.pem files carefully. Once they are lost, you have no way to decrypt the file on you Github which means you lost them forever!!
