@@ -51,15 +51,15 @@ function init() {
 
 
 function push() {
-    info "Push $LEAFREPO to Github"
+    cd "$BASE"
 
+    info "Push $LEAFREPO to Github"
     if [ ! -d "$LEAFREPO" ];
     then 
         error "$LEAFREPO does NOT exist."
         exit 1
     fi
 
-    cd "$BASE"
     info "Remove $REPO under $ROOT_DIR/"
     rm -f "$ROOTREPO"
     info "Encrypt $REPO from $LEAF_DIR to $ROOT_DIR"
@@ -77,9 +77,10 @@ function push() {
 
 
 function pull() {
-    info "Pull from Github"
+    cd "$BASE"
 
     cd "$ROOT_DIR"
+    info "Pull from Github"
     git pull --rebase 
     if [ ! -e "$REPO" ];
     then 
@@ -99,9 +100,9 @@ function pull() {
 
 
 BASE="$(pwd)"
-KEYDIR="$HOME/.keys"
 info "BASE=$BASE"
 CMD="$(basename $0)"
+KEYDIR=".keys"
 ACTION="$1"
 ROOT_DIR="root"
 LEAF_DIR="leaf"
