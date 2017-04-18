@@ -30,7 +30,7 @@ function error() {
 function init() {
     cd "$BASE"
 
-    if [ ! -d "$LEAF_DIR" ]; 
+    if [ ! -d "$LEAF_DIR" ];
     then
         mkdir "$LEAF_DIR"
     fi
@@ -41,7 +41,7 @@ function init() {
     fi
 
     if [ -e "$GITPRIVATE" ] || [ -e "$GITPUBLIC" ];
-    then 
+    then
         error "Pem files exits with the same name. Exit."
         exit 1
     fi
@@ -56,7 +56,7 @@ function push() {
 
     info "Push $LEAFREPO to Github"
     if [ ! -d "$LEAFREPO" ];
-    then 
+    then
         error "$LEAFREPO does NOT exist."
         exit 1
     fi
@@ -74,7 +74,7 @@ function push() {
     git commit -m"Push $REPO"
     git push -u origin master
     info "Finish push $REPO"
-}    
+}
 
 
 function pull() {
@@ -82,9 +82,9 @@ function pull() {
 
     cd "$ROOT_DIR"
     info "Pull from Github"
-    git pull --rebase 
+    git pull --rebase
     if [ ! -e "$REPO" ];
-    then 
+    then
         error "$REPO does NOT exist."
         exit 1
     fi
@@ -121,7 +121,7 @@ GITPUBLIC="$KEYDIR/git.public.pem"
 
 
 if ( [ "$ACTION" == "push" ] || [ "$ACTION" == "pull" ] ) && [ -z "$REPO" ];
-then 
+then
     error "Need a repository name."
     exit 1
 fi
@@ -133,4 +133,3 @@ case $ACTION in
     "pull") pull "$REPO" ;;
          *) usage ;;
 esac
-
